@@ -27,6 +27,34 @@ function App() {
     .catch(err => console.error(err))
   }
 
+  const saveQuote = async () => {
+    let payload = {
+      quote,
+      author
+    };
+
+    let postData = new FormData();
+    postData.append('json', JSON.stringify(payload));
+
+    await fetch(`http://localhost:8080/savedquotes`,{ 
+      method: `POST`,
+      // headers: {
+      //   // 'Accept': 'application/json',
+      //   'Content-Type': 'application/json'
+      // },
+      body: JSON.stringify(postData)
+    })
+    .then(res => {
+      console.log(12345, res.json());
+      return res.json();
+    })
+    .then(data => {
+      console.log('My Data from the POST request', data);
+      res.send(data);
+    })
+    .catch(err => console.error(err));
+  }
+
   useEffect(() => {
     getImage();
   }, [])
@@ -48,7 +76,9 @@ function App() {
         }}
         className='newQuote'
         >New Quote</button>
-        <button>Save</button>
+        <button
+          onClick={saveQuote}
+        >Save</button>
         <a
         href={twitterHref}
         target="_blank">
@@ -64,73 +94,3 @@ function App() {
 }
   
 export default App
-
-// const categories = [
-// `age`,
-// `alone`,
-// `amazing`,
-// `anger`,
-// `architecture`,
-// `art`,
-// `attitude`,
-// `beauty`,
-// `best`,
-// `birthday`,
-// `business`,
-// `car`,
-// `change`,
-// `communication`,
-// `computers`,
-// `cool`,
-// `courage`,
-// `dad`,
-// `dating`,
-// `death`,
-// `design`,
-// `dreams`,
-// `education`,
-// `environmental`,
-// `equality`,
-// `experience`,
-// `failure`,
-// `faith`,
-// `family`,
-// `famous`,
-// `fear`,
-// `fitness`,
-// `food`,
-// `forgiveness`,
-// `freedom`,
-// `friendship`,
-// `funny`,
-// `future`,
-// `god`,
-// `good`,
-// `government`,
-// `graduation`,
-// `great`,
-// `happiness`,
-// `health`,
-// `history`,
-// `home`,
-// `hope`,
-// `humor`,
-// `imagination`,
-// `inspirational`,
-// `intelligence`,
-// `jealousy`,
-// `knowledge`,
-// `leadership`,
-// `learning`,
-// `legal`,
-// `life`,
-// `love`,
-// `marriage`,
-// `medical`,
-// `men`,
-// `mom`,
-// `money`,
-// `morning`,
-// `movies`,
-// `success`,
-// ];

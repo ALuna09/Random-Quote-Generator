@@ -14,7 +14,7 @@ const {
 const app = express();
 const imgClient = createClient(IMG_API_KEY);
 
-// Create a Sequelize instance
+// Create a Sequelize instance of our db (saved_quotes)
 const sequelize = new Sequelize(
   'saved_quotes',
   'root',
@@ -25,8 +25,7 @@ const sequelize = new Sequelize(
 )
 
 const {
-  DataTypes,
-  Op
+  DataTypes
 } = Sequelize
 
 // Check connection with db
@@ -36,7 +35,7 @@ sequelize.authenticate().then(() => {
   console.error('Unable to connect to the database: ', error);
 });
 
-// This is a Table (Or Model)
+// We are creating this Table (Or Model), and naming it 'quotes' in MySQL and 'SavedQuotes' in the file
 const SavedQuotes = sequelize.define('quotes', {
   quote_id: {
     type: DataTypes.INTEGER,
@@ -44,7 +43,7 @@ const SavedQuotes = sequelize.define('quotes', {
     autoIncrement: true,
   },
   quote: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false
   },
   author: {
@@ -53,7 +52,6 @@ const SavedQuotes = sequelize.define('quotes', {
 });
 
 // This synchronizes the tables made with existing tables in MySQL
-// ? Might want to change "force" to "alter"
 SavedQuotes.sync({ alter: true }).then(() => {
   console.log('Quotes table created successfully!');
 }).catch((error) => {
@@ -66,27 +64,27 @@ app.get('/', (req, res) => {
   res.send('Hello World');
 });
 
-// Create a route to get all users
-app.get('/quotes', async (req, res) => {
-  const quotes = await SavedQuotes.findAll();
+// Create a route to get all quotes
+app.get('/savedquotes/all', (req, res) => {
+  const quotes = SavedQuotes.findAll();
   res.json(quotes);
 });
 
-// Create a route to create a new user
-app.post('/testquotes', async (req, res) => {
-  const quotes = await SavedQuotes.create({
-    quote: "Don't quote me boi. I aint said shit",
-    author: "Eazy E"
+// Create a route to create a new quote record
+app.post('/savedquotes', (req, res) => {
+  console.log('REQ ====================>', req.body);
+  const quotes = SavedQuotes.create({
+    quote: req.body.quote,
+    author: req.body.author
   }).then(() => {
-    console.log('Quoted Eazy E')
+    console.log('Quoted', 'someone')
+    res.send(quotes);
   }).catch((err) => {
-
-    console.error('8=D',err)
+    console.error(`We couldn't save your quote`, err)
   });
-  console.log('123456798',quotes)
-  res.send(quotes);
 });
 
+// -------------------------API calls-------------------------
 app.get('/quote', (req, res) => {
   fetch(`https://api.api-ninjas.com/v1/quotes`, {
     method: 'GET',
@@ -107,10 +105,12 @@ app.get('/images', (req, res) => {
   });
 })
 
+// ------------Quick test route------------
 app.get('/test', (req, res) => {
   res.send(`Hi! I'm the test route`)
 })
 
+// App listening on port
 app.listen(8080, () => {
   console.log('Listening on port 8080');
 })
