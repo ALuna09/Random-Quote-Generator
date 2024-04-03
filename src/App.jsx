@@ -21,37 +21,29 @@ function App() {
     fetch(`http://localhost:8080/images`)
     .then(res => res.json())
     .then(data => {
-      let element = document.getElementById('body');
-      element.style.backgroundImage = `url(${data.photos[Math.floor(Math.random() * 80)].src.original})`;
+      const randomPhotoURL = data.photos[Math.floor(Math.random() * 80)].src.original;
+      const element = document.getElementById('body');
+      element.style.backgroundImage = `url(${randomPhotoURL})`;
     })
     .catch(err => console.error(err))
   }
 
-  const saveQuote = async () => {
-    let payload = {
-      quote,
-      author
-    };
-
-    let postData = new FormData();
-    postData.append('json', JSON.stringify(payload));
-
-    await fetch(`http://localhost:8080/savedquotes`,{ 
+  const saveQuote = () => {
+    // Options necessary to pass desired data to 
+    fetch(`http://localhost:8080/savedquotes`,{ 
       method: `POST`,
-      // headers: {
-      //   // 'Accept': 'application/json',
-      //   'Content-Type': 'application/json'
-      // },
-      body: JSON.stringify(postData)
+      // Headers must be included for POST methods
+      headers: {
+        // 'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      // Body content must be a JSON.stringified object
+      body: JSON.stringify({
+        quote,
+        author
+      })
     })
-    .then(res => {
-      console.log(12345, res.json());
-      return res.json();
-    })
-    .then(data => {
-      console.log('My Data from the POST request', data);
-      res.send(data);
-    })
+    .then(res => res.json())
     .catch(err => console.error(err));
   }
 
@@ -90,7 +82,7 @@ function App() {
         >Copy</button>
       </div>
     </>
-    )
+  )
 }
   
 export default App

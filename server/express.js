@@ -1,4 +1,5 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 import Sequelize from "sequelize";
 import cors from 'cors';
 import { createClient } from 'pexels';
@@ -14,6 +15,12 @@ const {
 const app = express();
 const imgClient = createClient(IMG_API_KEY);
 
+// Cors is necessary to access different domains without conflicts
+// Apps on different ports are concidered domains
+app.use(cors())
+// Body Parser is necessary to read req.budy in POST paths
+app.use(bodyParser.json());
+
 // Create a Sequelize instance of our db (saved_quotes)
 const sequelize = new Sequelize(
   'saved_quotes',
@@ -24,9 +31,7 @@ const sequelize = new Sequelize(
   }
 )
 
-const {
-  DataTypes
-} = Sequelize
+const { DataTypes } = Sequelize;
 
 // Check connection with db
 sequelize.authenticate().then(() => {
@@ -58,8 +63,6 @@ SavedQuotes.sync({ alter: true }).then(() => {
   console.error('Unable to create table : ', error);
 });
 
-app.use(cors())
-
 app.get('/', (req, res) => {
   res.send('Hello World');
 });
@@ -71,17 +74,16 @@ app.get('/savedquotes/all', (req, res) => {
 });
 
 // Create a route to create a new quote record
-app.post('/savedquotes', (req, res) => {
-  console.log('REQ ====================>', req.body);
+app.post('/savedquotes',  (req, res) => {
   const quotes = SavedQuotes.create({
     quote: req.body.quote,
     author: req.body.author
   }).then(() => {
-    console.log('Quoted', 'someone')
-    res.send(quotes);
+    console.log('Quoted', req.body.author)
   }).catch((err) => {
     console.error(`We couldn't save your quote`, err)
   });
+  res.send(quotes);
 });
 
 // -------------------------API calls-------------------------
