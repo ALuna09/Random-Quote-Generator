@@ -16,9 +16,9 @@ const app = express();
 const imgClient = createClient(IMG_API_KEY);
 
 // Cors is necessary to access different domains without conflicts
-// Apps on different ports are concidered domains
+// Apps on different ports are considered different domains
 app.use(cors())
-// Body Parser is necessary to read req.budy in POST paths
+// Body Parser is necessary to read req.body in POST paths
 app.use(bodyParser.json());
 
 // Create a Sequelize instance of our db (saved_quotes)

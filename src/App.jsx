@@ -6,6 +6,7 @@ function App() {
   const [quote, setQuote] = useState(`To Quote or Not to Quote...`);
   const [author, setAuthor] = useState(`Somebody`);
   const [hide, setHide] = useState(true);
+  const [list, setList] = useState([]);
 
   const twitterHref = `https://twitter.com/intent/tweet?text=${'"' + quote + '"' + '  -' + author}`;
   
@@ -27,7 +28,6 @@ function App() {
 
       let listOfQuotesAsHTML = data.map(
         (quoteObj) => {
-          // console.log(8888888, quoteObj);
           return (
             <>
               <p>{quoteObj.quote}</p>
@@ -37,7 +37,7 @@ function App() {
         }
       )
 
-      return listOfQuotesAsHTML
+      setList(listOfQuotesAsHTML)
     })
     .catch(err => console.error(err))
   }
@@ -110,6 +110,7 @@ function App() {
       <HiddenQuotes 
       hide={hide}
       setHide={setHide}
+      list={list}
       getAllQuotes={getAllQuotes}/>
     </>
   )

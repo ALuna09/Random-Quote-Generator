@@ -53,6 +53,8 @@ button:hover {
   margin-right: 14.75%;
   background-color: rgb(44, 46, 52);
   opacity: 75%;
+  color: floralwhite;
+  border-color: black;
 }
 
 .quotesDisplay {
