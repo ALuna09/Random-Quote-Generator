@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import HiddenQuotes from './HiddenQuotes';
 
 function App() {
   const [quote, setQuote] = useState(`To Quote or Not to Quote...`);
   const [author, setAuthor] = useState(`Somebody`);
+  const [hide, setHide] = useState(true);
 
   const twitterHref = `https://twitter.com/intent/tweet?text=${'"' + quote + '"' + '  -' + author}`;
   
@@ -13,6 +15,29 @@ function App() {
     .then(data => {
       setQuote(data[0].quote)
       setAuthor(data[0].author)
+    })
+    .catch(err => console.error(err))
+  }
+
+  const getAllQuotes = () => {
+    fetch(`http://localhost:8080/savedquotes/all`)
+    .then(res => res.json())
+    .then(data => {
+      console.log(99999, data);
+
+      let listOfQuotesAsHTML = data.map(
+        (quoteObj) => {
+          // console.log(8888888, quoteObj);
+          return (
+            <>
+              <p>{quoteObj.quote}</p>
+              <p>- {quoteObj.author}</p>
+            </>
+          )
+        }
+      )
+
+      return listOfQuotesAsHTML
     })
     .catch(err => console.error(err))
   }
@@ -51,6 +76,7 @@ function App() {
     getImage();
   }, [])
   
+  //TODO Conditionally render saved quotes
   return (
     <>
       <div
@@ -81,6 +107,10 @@ function App() {
           className='copy'
         >Copy</button>
       </div>
+      <HiddenQuotes 
+      hide={hide}
+      setHide={setHide}
+      getAllQuotes={getAllQuotes}/>
     </>
   )
 }

@@ -68,8 +68,8 @@ app.get('/', (req, res) => {
 });
 
 // Create a route to get all quotes
-app.get('/savedquotes/all', (req, res) => {
-  const quotes = SavedQuotes.findAll();
+app.get('/savedquotes/all', async (req, res) => {
+  const quotes = await SavedQuotes.findAll();
   res.json(quotes);
 });
 

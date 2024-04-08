@@ -1,5 +1,4 @@
 #body {
-  /* background-image: url('https://images.squarespace-cdn.com/content/v1/5f9c4976896349619c5b3d7b/1605590945402-VAVQM9IAQLFAO3ANDSXJ/mobile-fallback-why-space.jpg?format=2500w'); */
   background-repeat: no-repeat;
   background-position: center;
   background-attachment: fixed;
@@ -36,9 +35,26 @@ button {
   color: floralwhite;
   background-color: rgb(44, 46, 52);
   height: 2rem;
-  width: 6rem
+  width: 6rem;
 }
 
 button:hover {
   background-color: darkcyan;
+}
+
+.hidden {
+  margin-top: 1%;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: center;
+  border-style: solid;
+  margin-left: 14.78%;
+  margin-right: 14.75%;
+  background-color: rgb(44, 46, 52);
+  opacity: 75%;
+}
+
+.quotesDisplay {
+  color: floralwhite;
 }
