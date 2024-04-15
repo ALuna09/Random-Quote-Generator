@@ -24,20 +24,43 @@ function App() {
     fetch(`http://localhost:8080/savedquotes/all`)
     .then(res => res.json())
     .then(data => {
-      console.log(99999, data);
-
       let listOfQuotesAsHTML = data.map(
         (quoteObj) => {
           return (
-            <>
+            <div
+            key={data.indexOf(quoteObj)}
+            className='hidden'>
               <p>{quoteObj.quote}</p>
               <p>- {quoteObj.author}</p>
-            </>
+              <button
+              onClick={unsaveQuote}>Unsave</button>
+            </div>
           )
         }
       )
-
       setList(listOfQuotesAsHTML)
+    })
+    .catch(err => console.error(err))
+  }
+
+  const unsaveQuote = () => {
+    fetch(`http://localhost:8080/savedquotes/deleteone`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        quote,
+        author
+      })
+    })
+    .then(res => {
+      console.log('RES>>>>>>>>>>>', res);
+      return res.json()
+    })
+    .then(data => {
+      res.send(data)
+      console.log(7777777777777, data)
     })
     .catch(err => console.error(err))
   }
@@ -59,7 +82,6 @@ function App() {
       method: `POST`,
       // Headers must be included for POST methods
       headers: {
-        // 'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
       // Body content must be a JSON.stringified object
@@ -76,7 +98,6 @@ function App() {
     getImage();
   }, [])
   
-  //TODO Conditionally render saved quotes
   return (
     <>
       <div

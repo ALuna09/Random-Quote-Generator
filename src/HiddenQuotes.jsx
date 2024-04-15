@@ -6,28 +6,46 @@ const HiddenQuotes = (props) => {
         list
     } = props;
 
-    let quotesData;
-    console.log(5555555555, list);
+    const deleteQuotes = () => {
+        fetch(`http://localhost:8080/savedquotes/deleteall`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => {
+            console.log(res);
+            res.json()
+        })
+        .then(data => {console.log(data)})
+        .catch(err => console.error(err))
+    }
 
     return (
         <>
             {hide ?
-            <button
-            className="quotesDisplay"
-            onClick={() => {
-                quotesData = getAllQuotes();
-                setHide((prev) => !prev)
-            }}
-            >Show Quotes</button> :
-            <div
-            className="hidden">
+            <span
+            className="quotesDisplay">
+                <button
+                    onClick={() => {
+                        getAllQuotes();
+                        setHide((prev) => !prev)
+                    }}
+                >Show Quotes</button>
+            </span>
+            :
+            <>
+                <span
+                className="quotesDisplay">
+                    <button
+                        onClick={() => setHide((prev) => !prev)}
+                    >Hide Quotes</button>
+                </span>
                 {list}
                 <button
-                className="quotesDisplay"
-                onClick={() => setHide((prev) => !prev)}
-                >Hide Quotes</button>
-            </div>
-            }
+                    onClick={deleteQuotes}
+                >Unsave All</button>
+            </>}
         </>
     )
 }

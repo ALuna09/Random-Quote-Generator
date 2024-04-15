@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import Sequelize from "sequelize";
+import Sequelize, { where } from "sequelize";
 import cors from 'cors';
 import { createClient } from 'pexels';
 import 'dotenv/config';
@@ -31,7 +31,7 @@ const sequelize = new Sequelize(
   }
 )
 
-const { DataTypes } = Sequelize;
+const { DataTypes, Op } = Sequelize;
 
 // Check connection with db
 sequelize.authenticate().then(() => {
@@ -74,16 +74,37 @@ app.get('/savedquotes/all', async (req, res) => {
 });
 
 // Create a route to create a new quote record
-app.post('/savedquotes',  (req, res) => {
-  const quotes = SavedQuotes.create({
-    quote: req.body.quote,
-    author: req.body.author
-  }).then(() => {
-    console.log('Quoted', req.body.author)
-  }).catch((err) => {
-    console.error(`We couldn't save your quote`, err)
-  });
-  res.send(quotes);
+app.post('/savedquotes',  async (req, res) => {
+  if(await SavedQuotes.findOne({
+    where: {
+      [Op.and]: [
+        {quote: req.body.quote},
+        {author: req.body.author}
+      ]
+    }
+  })) {
+    console.log('Quote already exists');
+  } else {
+    const quotes = SavedQuotes.create({
+      quote: req.body.quote,
+      author: req.body.author
+    }).then(() => {
+      console.log('Quoted', req.body.author)
+    }).catch((err) => {
+      console.error(`We couldn't save your quote`, err)
+    });
+    res.send(quotes);
+  }
+});
+
+app.delete('/savedquotes/deleteall', async (req, res) => {
+  await SavedQuotes.destroy({
+    truncate: true
+  })
+});
+
+app.delete('/savedquotes/deleteone', (req, res) => {
+  console.log(req.body)
 });
 
 // -------------------------API calls-------------------------
