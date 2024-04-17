@@ -103,8 +103,12 @@ app.delete('/savedquotes/deleteall', async (req, res) => {
   })
 });
 
-app.delete('/savedquotes/deleteone', (req, res) => {
-  console.log(req.body)
+app.delete('/savedquotes/deleteone', async (req, res) => {
+  await SavedQuotes.destroy({
+    where: {
+      quote_id: req.body.quote_id
+    }
+  })
 });
 
 // -------------------------API calls-------------------------

@@ -24,43 +24,8 @@ function App() {
     fetch(`http://localhost:8080/savedquotes/all`)
     .then(res => res.json())
     .then(data => {
-      let listOfQuotesAsHTML = data.map(
-        (quoteObj) => {
-          return (
-            <div
-            key={data.indexOf(quoteObj)}
-            className='hidden'>
-              <p>{quoteObj.quote}</p>
-              <p>- {quoteObj.author}</p>
-              <button
-              onClick={unsaveQuote}>Unsave</button>
-            </div>
-          )
-        }
-      )
-      setList(listOfQuotesAsHTML)
-    })
-    .catch(err => console.error(err))
-  }
-
-  const unsaveQuote = () => {
-    fetch(`http://localhost:8080/savedquotes/deleteone`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        quote,
-        author
-      })
-    })
-    .then(res => {
-      console.log('RES>>>>>>>>>>>', res);
-      return res.json()
-    })
-    .then(data => {
-      res.send(data)
-      console.log(7777777777777, data)
+      console.log('DATA', data);
+      setList(data)
     })
     .catch(err => console.error(err))
   }
@@ -90,6 +55,9 @@ function App() {
         author
       })
     })
+    //! Initial thought is to change this and set list here
+    //! but the body obj being sent is different from the
+    //! one being grabbed from the db
     .then(res => res.json())
     .catch(err => console.error(err));
   }
@@ -116,7 +84,14 @@ function App() {
         className='newQuote'
         >New Quote</button>
         <button
-          onClick={saveQuote}
+          onClick={() => {
+            //Save quote to db
+            saveQuote();
+
+            //! getAllQuotes SHOULD set list and rerender but doesnt
+            getAllQuotes();
+            //! may have to find another way to set list
+          }}
         >Save</button>
         <a
         href={twitterHref}
@@ -132,6 +107,7 @@ function App() {
       hide={hide}
       setHide={setHide}
       list={list}
+      setList={setList}
       getAllQuotes={getAllQuotes}/>
     </>
   )
