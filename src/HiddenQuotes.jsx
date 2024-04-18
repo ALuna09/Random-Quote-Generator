@@ -14,11 +14,7 @@ const HiddenQuotes = (props) => {
                 'Content-Type': 'application/json'
             }
         })
-        .then(res => {
-            console.log(res);
-            res.json();
-        })
-        .then(data => {console.log(data)})
+        .then(res => res.json())
         .catch(err => console.error(err))
     }
     

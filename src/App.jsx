@@ -24,8 +24,9 @@ function App() {
     fetch(`http://localhost:8080/savedquotes/all`)
     .then(res => res.json())
     .then(data => {
-      console.log('DATA', data);
-      setList(data)
+      let reorderedData = [];
+      data.forEach(e => reorderedData.unshift(e));
+      setList(reorderedData)
     })
     .catch(err => console.error(err))
   }
@@ -42,6 +43,7 @@ function App() {
   }
 
   const saveQuote = () => {
+    console.log('Pee');
     // Options necessary to pass desired data to 
     fetch(`http://localhost:8080/savedquotes`,{ 
       method: `POST`,
@@ -55,10 +57,11 @@ function App() {
         author
       })
     })
-    //! Initial thought is to change this and set list here
-    //! but the body obj being sent is different from the
-    //! one being grabbed from the db
     .then(res => res.json())
+    .then(() => {
+      console.log('POOP');
+      getAllQuotes()
+    })
     .catch(err => console.error(err));
   }
 
@@ -84,14 +87,7 @@ function App() {
         className='newQuote'
         >New Quote</button>
         <button
-          onClick={() => {
-            //Save quote to db
-            saveQuote();
-
-            //! getAllQuotes SHOULD set list and rerender but doesnt
-            getAllQuotes();
-            //! may have to find another way to set list
-          }}
+          onClick={() => {saveQuote()}}
         >Save</button>
         <a
         href={twitterHref}
