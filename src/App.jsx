@@ -30,16 +30,16 @@ function App() {
     .catch(err => console.error(err))
   }
 
-  const getImage = () => {
-    fetch(`http://localhost:8080/images`)
-    .then(res => res.json())
-    .then(data => {
-      const randomPhotoURL = data.photos[Math.floor(Math.random() * 80)].src.original;
-      const element = document.getElementById('body');
-      element.style.backgroundImage = `url(${randomPhotoURL})`;
-    })
-    .catch(err => console.error(err))
-  }
+  // const getImage = () => {
+  //   fetch(`http://localhost:8080/images`)
+  //   .then(res => res.json())
+  //   .then(data => {
+  //     const randomPhotoURL = data.photos[Math.floor(Math.random() * 80)].src.original;
+  //     const element = document.getElementById('body');
+  //     element.style.backgroundImage = `url(${randomPhotoURL})`;
+  //   })
+  //   .catch(err => console.error(err))
+  // }
 
   const saveQuote = () => {
     // Options necessary to pass desired data to 
@@ -58,12 +58,18 @@ function App() {
     //! Initial thought is to change this and set list here
     //! but the body obj being sent is different from the
     //! one being grabbed from the db
-    .then(res => res.json())
+    .then(res => {
+      res.json()
+    })
+    .then(()=> {
+      console.log("hit")
+      getAllQuotes();
+    })
     .catch(err => console.error(err));
   }
 
   useEffect(() => {
-    getImage();
+    // getImage();
   }, [])
   
   return (
@@ -79,7 +85,7 @@ function App() {
         <button
         onClick={() => {
           getQuote();
-          getImage();
+          // getImage();
         }}
         className='newQuote'
         >New Quote</button>
@@ -87,9 +93,9 @@ function App() {
           onClick={() => {
             //Save quote to db
             saveQuote();
+            // getAllQuotes();
 
             //! getAllQuotes SHOULD set list and rerender but doesnt
-            getAllQuotes();
             //! may have to find another way to set list
           }}
         >Save</button>
