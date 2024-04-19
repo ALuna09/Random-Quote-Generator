@@ -21,7 +21,7 @@ app.use(cors())
 // Body Parser is necessary to read req.body in POST paths
 app.use(bodyParser.json());
 
-// Create a Sequelize instance of our db (saved_quotes)
+// Create a Sequelize instance of our db ("saved_quotes")
 const sequelize = new Sequelize(
   'saved_quotes',
   'root',

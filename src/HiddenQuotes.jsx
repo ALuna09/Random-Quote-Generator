@@ -57,7 +57,7 @@ const HiddenQuotes = (props) => {
                             <p>{quoteObj.quote}</p>
                             <p>- {quoteObj.author}</p>
                             <button
-                            onClick={() =>{
+                            onClick={() => {
                                 let newList = [...list];
                                 newList.splice(list.indexOf(quoteObj), 1);
                                 setList(newList);

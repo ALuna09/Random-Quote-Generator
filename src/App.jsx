@@ -20,15 +20,15 @@ function App() {
     .catch(err => console.error(err))
   }
 
-  const getAllQuotes = () => {
-    fetch(`http://localhost:8080/savedquotes/all`)
+  const getAllQuotes = async () => {
+    await fetch(`http://localhost:8080/savedquotes/all`)
     .then(res => res.json())
     .then(data => {
       let reorderedData = [];
       data.forEach(e => reorderedData.unshift(e));
-      setList(reorderedData)
+      setList(reorderedData);
     })
-    .catch(err => console.error(err))
+    .catch(err => console.error(err));
   }
 
   const getImage = () => {
@@ -39,11 +39,10 @@ function App() {
       const element = document.getElementById('body');
       element.style.backgroundImage = `url(${randomPhotoURL})`;
     })
-    .catch(err => console.error(err))
+    .catch(err => console.error(err));
   }
 
   const saveQuote = () => {
-    console.log('Pee');
     // Options necessary to pass desired data to 
     fetch(`http://localhost:8080/savedquotes`,{ 
       method: `POST`,
@@ -51,17 +50,14 @@ function App() {
       headers: {
         'Content-Type': 'application/json'
       },
-      // Body content must be a JSON.stringified object
+      // Body content must be a JSON.stringify object
       body: JSON.stringify({
         quote,
         author
       })
     })
     .then(res => res.json())
-    .then(() => {
-      console.log('POOP');
-      getAllQuotes()
-    })
+    .then(() => getAllQuotes())
     .catch(err => console.error(err));
   }
 
