@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import Sequelize from "sequelize";
+import Sequelize, { where } from "sequelize";
 import cors from 'cors';
 import { createClient } from 'pexels';
 import 'dotenv/config';
@@ -16,12 +16,12 @@ const app = express();
 const imgClient = createClient(IMG_API_KEY);
 
 // Cors is necessary to access different domains without conflicts
-// Apps on different ports are concidered domains
+// Apps on different ports are considered different domains
 app.use(cors())
-// Body Parser is necessary to read req.budy in POST paths
+// Body Parser is necessary to read req.body in POST paths
 app.use(bodyParser.json());
 
-// Create a Sequelize instance of our db (saved_quotes)
+// Create a Sequelize instance of our db ("saved_quotes")
 const sequelize = new Sequelize(
   'saved_quotes',
   'root',
@@ -31,7 +31,7 @@ const sequelize = new Sequelize(
   }
 )
 
-const { DataTypes } = Sequelize;
+const { DataTypes, Op } = Sequelize;
 
 // Check connection with db
 sequelize.authenticate().then(() => {
@@ -68,22 +68,47 @@ app.get('/', (req, res) => {
 });
 
 // Create a route to get all quotes
-app.get('/savedquotes/all', (req, res) => {
-  const quotes = SavedQuotes.findAll();
+app.get('/savedquotes/all', async (req, res) => {
+  const quotes = await SavedQuotes.findAll();
   res.json(quotes);
 });
 
 // Create a route to create a new quote record
-app.post('/savedquotes',  (req, res) => {
-  const quotes = SavedQuotes.create({
-    quote: req.body.quote,
-    author: req.body.author
-  }).then(() => {
-    console.log('Quoted', req.body.author)
-  }).catch((err) => {
-    console.error(`We couldn't save your quote`, err)
-  });
-  res.send(quotes);
+app.post('/savedquotes',  async (req, res) => {
+  if(await SavedQuotes.findOne({
+    where: {
+      [Op.and]: [
+        {quote: req.body.quote},
+        {author: req.body.author}
+      ]
+    }
+  })) {
+    console.log('Quote already exists');
+  } else {
+    const quotes = SavedQuotes.create({
+      quote: req.body.quote,
+      author: req.body.author
+    }).then(() => {
+      console.log('Quoted', req.body.author)
+    }).catch((err) => {
+      console.error(`We couldn't save your quote`, err)
+    });
+    res.send(quotes);
+  }
+});
+
+app.delete('/savedquotes/deleteall', async (req, res) => {
+  await SavedQuotes.destroy({
+    truncate: true
+  })
+});
+
+app.delete('/savedquotes/deleteone', async (req, res) => {
+  await SavedQuotes.destroy({
+    where: {
+      quote_id: req.body.quote_id
+    }
+  })
 });
 
 // -------------------------API calls-------------------------

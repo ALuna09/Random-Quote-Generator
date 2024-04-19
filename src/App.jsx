@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import HiddenQuotes from './HiddenQuotes';
 
 function App() {
   const [quote, setQuote] = useState(`To Quote or Not to Quote...`);
   const [author, setAuthor] = useState(`Somebody`);
+  const [hide, setHide] = useState(true);
+  const [list, setList] = useState([]);
 
   const twitterHref = `https://twitter.com/intent/tweet?text=${'"' + quote + '"' + '  -' + author}`;
   
@@ -17,6 +20,17 @@ function App() {
     .catch(err => console.error(err))
   }
 
+  const getAllQuotes = async () => {
+    await fetch(`http://localhost:8080/savedquotes/all`)
+    .then(res => res.json())
+    .then(data => {
+      let reorderedData = [];
+      data.forEach(e => reorderedData.unshift(e));
+      setList(reorderedData);
+    })
+    .catch(err => console.error(err));
+  }
+
   const getImage = () => {
     fetch(`http://localhost:8080/images`)
     .then(res => res.json())
@@ -25,7 +39,7 @@ function App() {
       const element = document.getElementById('body');
       element.style.backgroundImage = `url(${randomPhotoURL})`;
     })
-    .catch(err => console.error(err))
+    .catch(err => console.error(err));
   }
 
   const saveQuote = () => {
@@ -34,16 +48,16 @@ function App() {
       method: `POST`,
       // Headers must be included for POST methods
       headers: {
-        // 'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      // Body content must be a JSON.stringified object
+      // Body content must be a JSON.stringify object
       body: JSON.stringify({
         quote,
         author
       })
     })
     .then(res => res.json())
+    .then(() => getAllQuotes())
     .catch(err => console.error(err));
   }
 
@@ -69,7 +83,7 @@ function App() {
         className='newQuote'
         >New Quote</button>
         <button
-          onClick={saveQuote}
+          onClick={() => {saveQuote()}}
         >Save</button>
         <a
         href={twitterHref}
@@ -81,6 +95,12 @@ function App() {
           className='copy'
         >Copy</button>
       </div>
+      <HiddenQuotes 
+      hide={hide}
+      setHide={setHide}
+      list={list}
+      setList={setList}
+      getAllQuotes={getAllQuotes}/>
     </>
   )
 }
