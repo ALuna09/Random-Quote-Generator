@@ -20,6 +20,8 @@ const imgClient = createClient(IMG_API_KEY);
 app.use(cors())
 // Body Parser is necessary to read req.body in POST paths
 app.use(bodyParser.json());
+// Serve static files
+app.use(express.static('../src'));
 
 // Create a Sequelize instance of our db ("saved_quotes")
 const sequelize = new Sequelize(
