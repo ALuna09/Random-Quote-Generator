@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import Sequelize, { where } from "sequelize";
+import Sequelize from "sequelize";
 import cors from 'cors';
 import { createClient } from 'pexels';
 import 'dotenv/config';
@@ -21,7 +21,7 @@ app.use(cors())
 // Body Parser is necessary to read req.body in POST paths
 app.use(bodyParser.json());
 // Serve static files
-app.use(express.static('../src'));
+app.use(express.static('../index.html'));
 
 // Create a Sequelize instance of our db ("saved_quotes")
 const sequelize = new Sequelize(
