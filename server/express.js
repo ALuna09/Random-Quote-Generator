@@ -29,7 +29,8 @@ const sequelize = new Sequelize(
   'root',
   MYSQL_PW,
   {
-    dialect: 'mysql'
+    dialect: 'mysql',
+    host: 'mysql'
   }
 )
 
@@ -65,6 +66,7 @@ SavedQuotes.sync({ alter: true }).then(() => {
   console.error('Unable to create table : ', error);
 });
 
+// Home route
 app.get('/', (req, res) => {
   res.send('Hello World');
 });
