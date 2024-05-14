@@ -1,0 +1,10 @@
+CREATE DATABASE IF NOT EXISTS quotes;
+USE quotes;
+
+CREATE IF NOT EXISTS saved_quotes(
+    QuoteID IS NOT NULL AUTO_INCREMENT,
+    Quote VARCHAR(255) NOT NULL,
+    Author VARCHAR(255),
+    PRIMARY KEY(QuoteID)
+)
+

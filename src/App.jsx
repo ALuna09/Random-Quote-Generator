@@ -54,7 +54,8 @@ function App() {
       body: JSON.stringify({
         quote,
         author
-      })
+      }),
+      mode: 'cors'
     })
     .then(res => res.json())
     .then(() => getAllQuotes())

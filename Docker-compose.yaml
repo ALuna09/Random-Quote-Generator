@@ -2,11 +2,10 @@ services:
   mysqldb:
     image: mysql:8.0
     container_name: mysqlcontainer
-    command: --default-authentication-plugin=mysql_native_password
+    # command: --default-authentication-plugin=mysql_native_password
     restart: unless-stopped
     volumes:
-      - ./dbinit/init.sql:/docker-entrypoint-initdb.d/0_init.sql
-      - $HOME/database:/var/lib/mysql
+      - "./.mysql-data/db:/var/lib/mysql"
     ports:
       - 3306:3306
     expose:
@@ -22,17 +21,16 @@ services:
       - internalnet
 
   nodeapp:
-    container_name: nodeappcontainer
+    container_name: quoteappcontainer
     build: 
-      context: .
       dockerfile: BDockerfile
-    image: nodeapp:v1
     volumes:
-      - $HOME/nodeapp:/code
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
     ports:
-      - 3000:3000
+      - 8080:8080
     expose:
-      - 3000
+      - 8080
     environment:
       DB_HOST: mysqldb
       DB_PORT: 3306
@@ -42,7 +40,7 @@ services:
       DB_CONNECTION_LIMIT: 20
       # SERVICE_TAGS: prod
       SERVICE_NAME: BackendQuotes
-      SERVER_PORT: 3000
+      SERVER_PORT: 8080
     depends_on:
       - mysqldb
     networks:

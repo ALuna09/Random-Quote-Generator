@@ -30,7 +30,8 @@ const sequelize = new Sequelize(
   MYSQL_PW,
   {
     dialect: 'mysql',
-    host: 'mysql'
+    host: '127.0.0.1',
+    port: 3306
   }
 )
 
