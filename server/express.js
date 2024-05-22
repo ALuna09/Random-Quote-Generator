@@ -4,6 +4,11 @@ import Sequelize, { where } from "sequelize";
 import cors from 'cors';
 import { createClient } from 'pexels';
 import 'dotenv/config';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import path from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Environment Variables
 const {
@@ -14,6 +19,9 @@ const {
 
 const app = express();
 const imgClient = createClient(IMG_API_KEY);
+
+// !Must remember to back out of current directory to get to dist (or built file)
+app.use(express.static(path.join(__dirname, '/../dist')))
 
 // Cors is necessary to access different domains without conflicts
 // Apps on different ports are considered different domains
@@ -64,7 +72,8 @@ SavedQuotes.sync({ alter: true }).then(() => {
 });
 
 app.get('/', (req, res) => {
-  res.send('Hello World');
+  console.log('dirname:',__dirname);
+  res.sendFile(path.resolve(`${__dirname}/../dist/index.html`));
 });
 
 // Create a route to get all quotes

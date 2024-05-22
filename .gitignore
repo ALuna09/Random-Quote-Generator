@@ -12,6 +12,7 @@ dist
 dist-ssr
 .env
 *.local
+.mysql-data
 
 # Editor directories and files
 .vscode/*
